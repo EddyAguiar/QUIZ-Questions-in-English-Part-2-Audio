@@ -1,0 +1,155 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interactive English Speaking Slides - Set 2</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f1f1f1;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    .slide {
+      display: none;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      max-width: 600px;
+      width: 90%;
+      text-align: center;
+    }
+    .slide.active {
+      display: block;
+    }
+    .controls {
+      margin-top: 20px;
+    }
+    input[type="text"] {
+      padding: 10px;
+      width: 80%;
+      margin: 10px 0;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px 15px;
+      font-size: 16px;
+      margin: 5px;
+      border-radius: 8px;
+      border: none;
+      background-color: #007BFF;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .feedback {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Questions in English (Part 2) Quiz</h1>
+  <div id="slides"></div>
+  <div class="controls">
+    <button onclick="prevSlide()">Previous</button>
+    <button onclick="nextSlide()">Next</button>
+  </div>
+
+  <script>
+    const slidesData = [
+      // DO / DOES / DID / TO BE (1-10)
+      { q: "___ you speak French?", a: "Do", full: "Do you speak French?" },
+      { q: "___ he like coffee?", a: "Does", full: "Does he like coffee?" },
+      { q: "___ we need more time?", a: "Do", full: "Do we need more time?" },
+      { q: "___ she visit her parents last week?", a: "Did", full: "Did she visit her parents last week?" },
+      { q: "___ they study for the test?", a: "Did", full: "Did they study for the test?" },
+      { q: "___ it work yesterday?", a: "Did", full: "Did it work yesterday?" },
+      { q: "___ he your friend?", a: "Is", full: "Is he your friend?" },
+      { q: "___ they at home now?", a: "Are", full: "Are they at home now?" },
+      { q: "___ she happy with the results?", a: "Is", full: "Is she happy with the results?" },
+      { q: "___ you in the meeting yesterday?", a: "Were", full: "Were you in the meeting yesterday?" },
+
+      // QUESTION WORDS + AUXILIARIES (11-20)
+      { q: "___ ___ he watch on TV?", a: "What did", full: "What did he watch on TV?" },
+      { q: "___ ___ she buy at the store?", a: "What did", full: "What did she buy at the store?" },
+      { q: "___ ___ you eat for lunch?", a: "What did", full: "What did you eat for lunch?" },
+      { q: "___ ___ they arrive?", a: "When did", full: "When did they arrive?" },
+      { q: "___ ___ we need to leave?", a: "Why do", full: "Why do we need to leave?" },
+      { q: "___ ___ she take the test?", a: "Why did", full: "Why did she take the test?" },
+      { q: "___ ___ he know the answer?", a: "How does", full: "How does he know the answer?" },
+      { q: "___ ___ they talk to the manager?", a: "Why did", full: "Why did they talk to the manager?" },
+      { q: "___ ___ we do next?", a: "What do", full: "What do we do next?" },
+      { q: "___ ___ it cost?", a: "How much does", full: "How much does it cost?" }
+    ];
+
+    const slidesContainer = document.getElementById("slides");
+    let currentSlide = 0;
+
+    slidesData.forEach((slide, index) => {
+      const div = document.createElement("div");
+      div.className = "slide";
+      if (index === 0) div.classList.add("active");
+
+      div.innerHTML = `
+        <h2>Slide ${index + 1} / ${slidesData.length}</h2>
+        <p><strong>${slide.q}</strong></p>
+        <button onclick="playAudio(${index})">🔊 Listen</button><br>
+        <input type="text" id="input${index}" placeholder="Type your answer here..." />
+        <br>
+        <button onclick="checkAnswer(${index})">Check Answer</button>
+        <p class="feedback" id="feedback${index}"></p>
+      `;
+      slidesContainer.appendChild(div);
+    });
+
+    function playAudio(index) {
+      const msg = new SpeechSynthesisUtterance(slidesData[index].full);
+      window.speechSynthesis.speak(msg);
+    }
+
+    function checkAnswer(index) {
+      const userInput = document.getElementById(`input${index}`).value.trim().toLowerCase();
+      const correctAnswer = slidesData[index].a.toLowerCase();
+      const feedback = document.getElementById(`feedback${index}`);
+
+      if (userInput === correctAnswer) {
+        feedback.textContent = "✅ Correct!";
+        feedback.style.color = "green";
+      } else {
+        feedback.textContent = `❌ Try again. Hint: It starts with '${correctAnswer.split(" ")[0]}'`;
+        feedback.style.color = "red";
+      }
+    }
+
+    function showSlide(index) {
+      const allSlides = document.querySelectorAll(".slide");
+      allSlides.forEach(slide => slide.classList.remove("active"));
+      allSlides[index].classList.add("active");
+    }
+
+    function nextSlide() {
+      if (currentSlide < slidesData.length - 1) {
+        currentSlide++;
+        showSlide(currentSlide);
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 0) {
+        currentSlide--;
+        showSlide(currentSlide);
+      }
+    }
+  </script>
+</body>
+</html>
